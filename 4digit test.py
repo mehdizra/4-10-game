@@ -13,7 +13,6 @@ def prnts_ok(p1, p2, p3, p4, p5, p6):
     else:
         return True
 
-
 def statmnt_ok(string):
     if string.find('/0') > 0: return False  # division by zero    
     if '(' not in string and ')' not in string: return True  # without pranthes
@@ -25,20 +24,7 @@ def statmnt_ok(string):
     else:
         return True
 
-
-def enter_number():
-    while True:
-        print('To exit enter 0')
-        try:
-            inp_number = int(input('Enter a 4 digit number: '))
-            if inp_number == 0 or inp_number in range(1000, 10000):
-                break
-            else:
-                continue
-        except:
-            print('Wrong Entery: ')
-    if inp_number == 0:
-        quit()
+def numaslist(inp_number):
     num_as_list = []
     cntr = 4
     while cntr >= 1:
@@ -48,17 +34,27 @@ def enter_number():
     num_as_list.reverse()
     return num_as_list
 
-
-oprsign = '+-/*'
 while True:
-    Num_as_list = enter_number()
+    try:
+        limit = int(input('Select the difficulty of numbers, between 1 and 10: '))
+        if 0 < limit < 10: break
+    except:
+        continue
+(a,b)=(1000,10000)
+print('between %i and %i there are these solutions with a maximum of %i outcomes' % (a , b , limit))
+unique2 = []  # all result will save in this list
+oprsign = '+-/*'
+unique = dict()
+cnt = 1
+for number in range(a, b):
+    Num_as_list = numaslist(number)
     digits = len(Num_as_list)  # Convert to 4 separate digits in a list
     resultlist = []
     resultlist1 = []
-    unique = dict()  # save all numbers in this dictionary
-    cnt = 1  # شمارنده جوابها
     NM = []
+    count = 0
     mathex = []
+    unique_tmp = []
     for i1 in range(0, digits):
         for i2 in range(0, digits):
             for i3 in range(0, digits):
@@ -67,10 +63,10 @@ while True:
                     NM = [Num_as_list[i1], Num_as_list[i2], Num_as_list[i3], Num_as_list[i4]]
 # To prevent repeated calculations in four-digit numbers that contain one or more repeated numbers
                     NM_str = ''.join(str(s) for s in NM).replace(' ', '')
-                    if NM_str in unique: 
+                    if NM_str in unique:
                         continue
                     else:
-                        unique[NM_str] = None 
+                        unique[NM_str] = None
                         for prnts1 in ' (':  # add parentheses
                             for prnts2 in ' (':
                                 for prnts3 in ' )':
@@ -83,30 +79,26 @@ while True:
                                                     for op1 in oprsign:
                                                         for op2 in oprsign:
                                                             for op3 in oprsign:
-                                                                mathex = [prnts1, NM[0], op1, prnts2, NM[1], prnts3,
-                                                                          op2, prnts4, NM[2], prnts5, op3, NM[3],
-                                                                          prnts6]
-                                                                mathex_str = ''.join(str(e) for e in mathex).replace(
-                                                                    ' ', '')
+                                                                mathex = [prnts1, NM[0], op1, prnts2, NM[1], prnts3, op2
+                                                                    , prnts4, NM[2], prnts5, op3, NM[3], prnts6]
+                                                                mathex_str = ''.join(str(e) for e in mathex).replace(' ', '')
                                                                 if statmnt_ok(mathex_str):
                                                                     try:
                                                                         if eval(mathex_str) == 10:
                                                                             mathex_str = str(mathex_str.replace('*', '×').replace('/', '÷') + '=10')
-                                                                            if '(' in mathex_str:  #add results in 2 kind of list for sorting
-                                                                                resultlist.append(''.join(mathex_str))
-                                                                            else:
-                                                                                resultlist1.append(''.join(mathex_str))
+                                                                            hardest = mathex_str
+                                                                            unique_tmp.append(hardest)
                                                                         else:
                                                                             continue
                                                                     except:
                                                                         continue
                                                                 else:
                                                                     continue
-    resultlist.sort()
-    resultlist1.sort()
-    resultlist1.extend(resultlist)
-    if len(resultlist1) == 0:
-        print("this number cannot convert to 10")
-    else:
-        for i in range(len(resultlist1)):
-            print(i+1, resultlist1[i])
+    if len(unique_tmp) <= limit:
+        for item in unique_tmp:
+            if item in unique2:
+                continue
+            else:
+                print(cnt, number,":", '  &  '.join(str(e) for e in unique_tmp).replace(' ', ' '))
+                cnt += 1
+                unique2.extend(unique_tmp)
