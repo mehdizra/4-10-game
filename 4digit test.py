@@ -1,6 +1,5 @@
-# op = ['x','÷','+','-'] ترتیب عملگراها
-
-def oprate(num1, o, num2):  # تابع محاسبه کننده عملگراها
+# op = ['x','÷','+','-'] Mathematical operators respectively
+def oprate(num1, o, num2):  #Computational function of operands
     if o == 0:
         return num1 * num2
     if o == 1:
@@ -13,8 +12,7 @@ def oprate(num1, o, num2):  # تابع محاسبه کننده عملگراها
     if o == 3:
         return num1 - num2
 
-
-def sign(n):  # تابع مشخص کننده عملگراها برای چاپ
+def sign(n):  # change oprators for print
     if n == 0:
         return 'x'
     if n == 1:
@@ -26,9 +24,8 @@ def sign(n):  # تابع مشخص کننده عملگراها برای چاپ
     if n == 4:
         return '='
 
-
 def enter_number():
-    while True:  # دریافت عدد درست 4 رقمی
+    while True:  # input 4 digit numbers correctly
         print('To exit enter 0')
         try:
             inp_number = int(input('Enter a 4 digit number: '))
@@ -49,36 +46,33 @@ def enter_number():
     num_as_list.reverse()
     return num_as_list
 
-
-while True:
+while True:  # Convert to 4 separate digits in a list
     Num_as_list = enter_number()
-    # تبدیل به 4 رقم مجزا در یک لیست
     i = len(Num_as_list)
     result = 0
     new_num = []
     unique = []
     count = 0
-    for i1 in range(0, i):  # استخراج اعداد 4رقمی مختلف از یک عدد 4 رقمی
+    for i1 in range(0, i):  # Extracting different 4-digit numbers from a 4-digit number
         for i2 in range(0, i):
             for i3 in range(0, i):
                 for i4 in range(0, i):
-                    if i1 == i2 or i1 == i3 or i1 == i4 or i2 == i3 or i2 == i4 or i3 == i4:
+                    if len({i1,i2,i3,i4}) != i :
                         continue
                     new_num = [Num_as_list[i1], Num_as_list[i2], Num_as_list[i3], Num_as_list[i4]]
-                    # برای جلوگیری از محاسبات تکراری در اعداد چهاررقمی که یک یا چند عدد در آنها تکرار شده اند
-                    if new_num in unique:
+                    if new_num in unique: #To avoid duplicate calculations
                         continue
                     else:
                         unique.append([Num_as_list[i1], Num_as_list[i2], Num_as_list[i3], Num_as_list[i4]])
-                    for opr1 in range(0, 4):  # تست 4 عمل اصلی بین 4 رقم و محاسبه نتیجه آن
+                    for opr1 in range(0, 4):  # Test 4 main operations between 4 digits and calculate its result
                         for opr2 in range(0, 4):
                             for opr3 in range(0, 4):
                                 result = oprate(new_num[0], opr1, new_num[1])
                                 result = oprate(result, opr2, new_num[2])
                                 result = oprate(result, opr3, new_num[3])
-                                if result == 10:  # در صورت 10 بودن نتیجه محاسبات، عملگراها چاپ می شوند
-                                    count += 1  # محاسبه تعداد راههای کشف شده
+                                if result == 10:  
+                                    count += 1  # Calculate the number of discovered paths
                                     print(count, ":  ", new_num[0], sign(opr1), new_num[1], sign(opr2), new_num[2],
                                           sign(opr3), new_num[3], sign(4), int(result))
     if count == 0:
-        print("این اعداد به 10 تبدیل نمی شوند")
+        print("this number cannot convert to 10")
