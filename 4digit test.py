@@ -1,31 +1,33 @@
-# op = ['x','÷','+','-'] Mathematical operators respectively
-def oprate(num1, o, num2):  #Computational function of operands
-    if o == 0:
-        return num1 * num2
-    if o == 1:
-        if num2 == 0:
-            return 0
-        else:
-            return num1 / num2
-    if o == 2:
-        return num1 + num2
-    if o == 3:
-        return num1 - num2
+def prnts_ok(p1, p2, p3, p4, p5, p6):
+    if p3 == ')' and p4 == '(': return False
+    if p2 == '(' and p3 == ')': return False
+    if p4 == '(' and p5 == ')': return False
+    if p1 == '(' and p6 == ')': return False
+    if p1 == '(' and p2 == '(': return False
+    if p2 == '(' and p4 == '(': return False
+    if p1 == '(' and p4 == '(': return False
+    if p3 == ')' and p5 == ')': return False
+    if p3 == ')' and p6 == ')': return False
+    if p5 == ')' and p6 == ')':
+        return False
+    else:
+        return True
 
-def sign(n):  # change oprators for print
-    if n == 0:
-        return 'x'
-    if n == 1:
-        return '÷'
-    if n == 2:
-        return '+'
-    if n == 3:
-        return '-'
-    if n == 4:
-        return '='
+
+def statmnt_ok(string):
+    if string.find('/0') > 0: return False  # division by zero    
+    if '(' not in string and ')' not in string: return True  # without pranthes
+    if ')' in string and '(' not in string: return False  # only 1 peranthes
+    if '(' in string and ')' not in string: return False  # only 1 peranthes
+    if string[1] in '+*': return False  # repeated result
+    if string[4] in '*' and string[0] == '(' and string[6] == ')':  # repeated result
+        return False
+    else:
+        return True
+
 
 def enter_number():
-    while True:  # input 4 digit numbers correctly
+    while True:
         print('To exit enter 0')
         try:
             inp_number = int(input('Enter a 4 digit number: '))
@@ -46,33 +48,65 @@ def enter_number():
     num_as_list.reverse()
     return num_as_list
 
-while True:  # Convert to 4 separate digits in a list
+
+oprsign = '+-/*'
+while True:
     Num_as_list = enter_number()
-    i = len(Num_as_list)
-    result = 0
-    new_num = []
-    unique = []
-    count = 0
-    for i1 in range(0, i):  # Extracting different 4-digit numbers from a 4-digit number
-        for i2 in range(0, i):
-            for i3 in range(0, i):
-                for i4 in range(0, i):
-                    if len({i1,i2,i3,i4}) != i :
-                        continue
-                    new_num = [Num_as_list[i1], Num_as_list[i2], Num_as_list[i3], Num_as_list[i4]]
-                    if new_num in unique: #To avoid duplicate calculations
+    digits = len(Num_as_list)  # Convert to 4 separate digits in a list
+    resultlist = []
+    resultlist1 = []
+    unique = dict()  # save all numbers in this dictionary
+    cnt = 1  # شمارنده جوابها
+    NM = []
+    mathex = []
+    for i1 in range(0, digits):
+        for i2 in range(0, digits):
+            for i3 in range(0, digits):
+                for i4 in range(0, digits):
+                    if len({i1,i2,i3,i4}) != digits: continue
+                    NM = [Num_as_list[i1], Num_as_list[i2], Num_as_list[i3], Num_as_list[i4]]
+# To prevent repeated calculations in four-digit numbers that contain one or more repeated numbers
+                    NM_str = ''.join(str(s) for s in NM).replace(' ', '')
+                    if NM_str in unique: 
                         continue
                     else:
-                        unique.append([Num_as_list[i1], Num_as_list[i2], Num_as_list[i3], Num_as_list[i4]])
-                    for opr1 in range(0, 4):  # Test 4 main operations between 4 digits and calculate its result
-                        for opr2 in range(0, 4):
-                            for opr3 in range(0, 4):
-                                result = oprate(new_num[0], opr1, new_num[1])
-                                result = oprate(result, opr2, new_num[2])
-                                result = oprate(result, opr3, new_num[3])
-                                if result == 10:  
-                                    count += 1  # Calculate the number of discovered paths
-                                    print(count, ":  ", new_num[0], sign(opr1), new_num[1], sign(opr2), new_num[2],
-                                          sign(opr3), new_num[3], sign(4), int(result))
-    if count == 0:
+                        unique[NM_str] = None 
+                        for prnts1 in ' (':  # add parentheses
+                            for prnts2 in ' (':
+                                for prnts3 in ' )':
+                                    for prnts4 in ' (':
+                                        for prnts5 in ' )':
+                                            for prnts6 in ' )':
+                                                if prnts_ok(prnts1, prnts2, prnts3, prnts4, prnts5, prnts6) is False:
+                                                    continue
+                                                else: # Test 4 main operations between 4 digits and calculate its result
+                                                    for op1 in oprsign:
+                                                        for op2 in oprsign:
+                                                            for op3 in oprsign:
+                                                                mathex = [prnts1, NM[0], op1, prnts2, NM[1], prnts3,
+                                                                          op2, prnts4, NM[2], prnts5, op3, NM[3],
+                                                                          prnts6]
+                                                                mathex_str = ''.join(str(e) for e in mathex).replace(
+                                                                    ' ', '')
+                                                                if statmnt_ok(mathex_str):
+                                                                    try:
+                                                                        if eval(mathex_str) == 10:
+                                                                            mathex_str = str(mathex_str.replace('*', '×').replace('/', '÷') + '=10')
+                                                                            if '(' in mathex_str:  #add results in 2 kind of list for sorting
+                                                                                resultlist.append(''.join(mathex_str))
+                                                                            else:
+                                                                                resultlist1.append(''.join(mathex_str))
+                                                                        else:
+                                                                            continue
+                                                                    except:
+                                                                        continue
+                                                                else:
+                                                                    continue
+    resultlist.sort()
+    resultlist1.sort()
+    resultlist1.extend(resultlist)
+    if len(resultlist1) == 0:
         print("this number cannot convert to 10")
+    else:
+        for i in range(len(resultlist1)):
+            print(i+1, resultlist1[i])
