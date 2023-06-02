@@ -26,19 +26,7 @@ def statmnt_ok(string):
         return True
 
 
-def enter_number():
-    while True:
-        print('To exit enter 0')
-        try:
-            inp_number = int(input('Enter a 4 digit number: '))
-            if inp_number == 0 or inp_number in range(1000, 10000):
-                break
-            else:
-                continue
-        except:
-            print('Wrong Entery: ')
-    if inp_number == 0:
-        quit()
+def numaslist(inp_number):
     num_as_list = []
     cntr = 4
     while cntr >= 1:
@@ -49,6 +37,21 @@ def enter_number():
     return num_as_list
 
 
+def enter_number():
+    while True:
+        print('To exit enter 0')
+        try:
+            inp_number = int(input('Enter a 4 digit number: '))
+            if inp_number == 0 or inp_number in range(1000, 10000):
+                break
+            else:
+                print('Wrong Entery: ')
+        except:
+            continue    
+    if inp_number == 0:
+        quit()
+    return numaslist(inp_number)
+
 oprsign = '+-/*'
 while True:
     Num_as_list = enter_number()
@@ -56,7 +59,7 @@ while True:
     resultlist = []
     resultlist1 = []
     unique = dict()  # save all numbers in this dictionary
-    cnt = 1  # شمارنده جوابها
+    cnt = 1  # results counter
     NM = []
     mathex = []
     for i1 in range(0, digits):
